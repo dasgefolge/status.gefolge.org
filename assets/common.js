@@ -71,7 +71,10 @@ function startWebsocket() {
                                     const row = document.createElement('tr');
                                     const hashCell = document.createElement('td');
                                     const hash = document.createElement('code');
-                                    hash.appendChild(document.createTextNode(commit.commitHash.slice(0, 7)));
+                                    const hashLink = document.createElement('a');
+                                    hashLink.setAttribute('href', `https://github.com/dasgefolge/status.gefolge.org/commit/${commit.commitHash}`);
+                                    hashLink.appendChild(document.createTextNode(commit.commitHash.slice(0, 7)));
+                                    hash.appendChild(hashLink);
                                     hashCell.appendChild(hash);
                                     row.appendChild(hashCell);
                                     const msgCell = document.createElement('td');

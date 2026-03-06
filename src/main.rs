@@ -174,7 +174,11 @@ async fn index(supervisor: &State<Supervisor>) -> RawHtml<String> {
         h1 : "status.gefolge.org";
         p {
             : "Aktuell läuft: ";
-            code : GIT_COMMIT_HASH.to_hex_with_len(7).to_string();
+            code {
+                a(href = format!("https://github.com/dasgefolge/status.gefolge.org/commit/{GIT_COMMIT_HASH}")) : GIT_COMMIT_HASH.to_hex_with_len(7).to_string();
+            }
+            : " • ";
+            a(id = "status-history", href = format!("https://github.com/dasgefolge/status.gefolge.org/commits/{GIT_COMMIT_HASH}")) : "Verlauf";
         }
         p(id = "status-future-empty", style? = (!status_future.is_empty()).then_some("display: none;")) : "status.fenhl.net ist auf dem neusten Stand.";
         div(id = "status-future-nonempty", style? = status_future.is_empty().then_some("display: none;")) {
@@ -191,7 +195,9 @@ async fn index(supervisor: &State<Supervisor>) -> RawHtml<String> {
                     @for (commit_hash, commit_msg, status) in status_future {
                         tr {
                             td {
-                                code : commit_hash.to_hex_with_len(7).to_string();
+                                code {
+                                    a(href = format!("https://github.com/dasgefolge/gefolge.org/commit/{commit_hash}")) : commit_hash.to_hex_with_len(7).to_string();
+                                }
                             }
                             td : commit_msg;
                             td {
