@@ -30,10 +30,16 @@ use {
             FromData,
             ToByteUnit as _,
         },
-        http::Status,
+        http::{
+            ContentType,
+            Status,
+        },
         outcome::Outcome,
         request::Request,
-        response::content::RawHtml,
+        response::content::{
+            RawCss,
+            RawHtml,
+        },
         uri,
     },
     rocket_ws::WebSocket,
@@ -80,7 +86,7 @@ fn page(title: &str, content: impl ToHtml) -> RawHtml<String> {
                 link(rel = "icon", sizes = "128x128", type = "image/png", href = "https://gefolge.org/static/favicon-128.png");
                 link(rel = "icon", sizes = "256x256", type = "image/png", href = "https://gefolge.org/static/favicon-256.png");
                 link(rel = "stylesheet", href = "https://gefolge.org/static/riir.css");
-                link(rel = "stylesheet", href = "https://gefolge.org/static/dejavu-sans.css");
+                link(rel = "stylesheet", href = uri!(dejavu_css));
                 link(rel = "stylesheet", href = "https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap");
             }
             body {
@@ -272,6 +278,37 @@ async fn websocket(supervisor: &State<Supervisor>, ws: WebSocket, mut shutdown: 
     }
 }
 
+#[rocket::get("/dejavu-sans.css")]
+fn dejavu_css() -> RawCss<&'static str> {
+    RawCss(include_str!("../assets/dejavu-sans.css"))
+}
+
+#[rocket::get("/dejavu-sans-webfont.eot")]
+fn dejavu_eot() -> (ContentType, &'static [u8]) {
+    (ContentType::new("application", "vnd.ms-fontobject"), include_bytes!("../assets/fonts/dejavu-sans-webfont.eot"))
+}
+
+#[rocket::get("/dejavu-sans-webfont.woff2")]
+fn dejavu_woff2() -> (ContentType, &'static [u8]) {
+    (ContentType::WOFF2, include_bytes!("../assets/fonts/dejavu-sans-webfont.woff2"))
+}
+
+#[rocket::get("/dejavu-sans-webfont.woff")]
+fn dejavu_woff() -> (ContentType, &'static [u8]) {
+    (ContentType::WOFF, include_bytes!("../assets/fonts/dejavu-sans-webfont.woff"))
+}
+
+#[rocket::get("/dejavu-sans-webfont.ttf")]
+fn dejavu_ttf() -> (ContentType, &'static [u8]) {
+    (ContentType::TTF, include_bytes!("../assets/fonts/dejavu-sans-webfont.ttf"))
+}
+
+#[rocket::get("/dejavu-sans-webfont.svg")]
+fn dejavu_svg() -> (ContentType, &'static [u8]) {
+    (ContentType::SVG, include_bytes!("../assets/fonts/dejavu-sans-webfont.svg"))
+}
+
+
 macro_rules! guard_try {
     ($res:expr) => {
         match $res {
@@ -425,6 +462,12 @@ async fn main() -> Result<(), Error> {
     .mount("/", rocket::routes![
         index,
         websocket,
+        dejavu_css,
+        dejavu_eot,
+        dejavu_woff2,
+        dejavu_woff,
+        dejavu_ttf,
+        dejavu_svg,
         github_webhook,
     ])
     .register("/", rocket::catchers![
