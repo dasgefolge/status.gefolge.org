@@ -1,0 +1,44 @@
+[package]
+name = "status-gefolge-org"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.91" # nixpkgs stable
+
+[profile.release]
+codegen-units = 1
+lto = true
+strip = true
+
+[lints.rust]
+rust_2018_idioms = "deny"
+unsafe_code = "forbid"
+unused = "deny"
+unused_crate_dependencies = "deny"
+unused_import_braces = "deny"
+unused_lifetimes = "deny"
+unused_qualifications = "deny"
+warnings = "deny"
+
+[build-dependencies]
+gix = "0.80"
+itertools = "0.14"
+
+[dependencies]
+base64 = "0.22"
+collect-mac = "0.1"
+futures = "0.3"
+gix = "0.80"
+hmac = "0.12"
+itermore = { version = "0.8", features = ["array_chunks"] }
+itertools = "0.14"
+log-lock = { git = "https://github.com/fenhl/log-lock" }
+mimalloc = "0.1"
+rocket = { version = "0.5", features = ["secrets"] }
+rocket-util = { git = "https://github.com/fenhl/rocket-util" }
+rocket_ws = "0.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = { package = "serde_json_path_to_error", version = "0.1" }
+sha2 = "0.10"
+thiserror = "2"
+tokio = { version = "1", features = ["macros", "process", "sync", "time"] }
+wheel = { git = "https://github.com/fenhl/wheel", features = ["rocket"] }
