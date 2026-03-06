@@ -158,7 +158,7 @@ impl Supervisor {
             })),
             webhook: webhook_tx,
         };
-        let mut gefolge_web_build_task = None;
+        let mut gefolge_web_build_task = this.gefolge_web_build_task().await;
         let mut needs_gefolge_web_rebuild = false;
         let mut needs_status_restart = false;
         Ok((this.clone(), move |mut shutdown: rocket::Shutdown| async move {
