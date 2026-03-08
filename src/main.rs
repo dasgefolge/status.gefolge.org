@@ -180,7 +180,7 @@ async fn index(supervisor: &State<Supervisor>) -> RawHtml<String> {
             : " • ";
             a(id = "status-history", href = format!("https://github.com/dasgefolge/status.gefolge.org/commits/{GIT_COMMIT_HASH}")) : "Verlauf";
         }
-        p(id = "status-future-empty", style? = (!status_future.is_empty()).then_some("display: none;")) : "status.fenhl.net ist auf dem neusten Stand.";
+        p(id = "status-future-empty", style? = (!status_future.is_empty()).then_some("display: none;")) : "status.gefolge.org ist auf dem neusten Stand.";
         div(id = "status-future-nonempty", style? = status_future.is_empty().then_some("display: none;")) {
             p : "Bevorstehende Updates:";
             table {
