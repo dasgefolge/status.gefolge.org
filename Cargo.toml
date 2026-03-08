@@ -24,7 +24,9 @@ gix = "0.80"
 itertools = "0.14"
 
 [dependencies]
+async-proto = "0.26"
 base64 = "0.22"
+clap = { version = "4", features = ["derive"] }
 collect-mac = "0.1"
 futures = "0.3"
 gix = "0.80"
