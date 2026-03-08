@@ -63,7 +63,7 @@ use {
 #[cfg(not(unix))] use tokio::io::Empty as UnixStream;
 
 // uses global gitdir to allow caddy to access static files
-const GEFOLGE_WEB_BUILD_REPO_PATH: &str = "/opt/git/github.com/dasgefolge/gefolge.org/build";
+const GEFOLGE_WEB_REPO_PATH: &str = "/opt/git/github.com/dasgefolge/gefolge.org/main";
 const STATUS_REPO_PATH: &str = "/opt/git/github.com/dasgefolge/status.gefolge.org/main";
 
 pub(crate) struct Status {
@@ -149,8 +149,8 @@ impl Supervisor {
                 gefolge_web_running,
                 gefolge_web_future: {
                     let mut future = Vec::default();
-                    Command::new("git").arg("fetch").current_dir(GEFOLGE_WEB_BUILD_REPO_PATH).check("git fetch").await?; //TODO use GitHub API or gix (how?)
-                    let repo = gix::open(GEFOLGE_WEB_BUILD_REPO_PATH)?;
+                    Command::new("git").arg("fetch").current_dir(GEFOLGE_WEB_REPO_PATH).check("git fetch").await?; //TODO use GitHub API or gix (how?)
+                    let repo = gix::open(GEFOLGE_WEB_REPO_PATH)?;
                     let new_head = repo.find_reference("origin/main")?.peel_to_commit()?.id;
                     if new_head != gefolge_web_running {
                         let mut iter_commit = repo.find_commit(new_head)?;
@@ -400,8 +400,8 @@ impl Supervisor {
 
     async fn fetch_gefolge_web(&self) -> Result<bool, Error> {
         Ok(lock!(repo_lock = self.gefolge_web_build_repo_lock; {
-            Command::new("git").arg("fetch").current_dir(GEFOLGE_WEB_BUILD_REPO_PATH).check("git fetch").await?; //TODO use GitHub API or gix (how?)
-            let repo = gix::open(GEFOLGE_WEB_BUILD_REPO_PATH)?;
+            Command::new("git").arg("fetch").current_dir(GEFOLGE_WEB_REPO_PATH).check("git fetch").await?; //TODO use GitHub API or gix (how?)
+            let repo = gix::open(GEFOLGE_WEB_REPO_PATH)?;
             let new_head = repo.find_reference("origin/main")?.peel_to_commit()?.id;
             lock!(@write status = self.status; {
                 let _ = status.watch.send(());
