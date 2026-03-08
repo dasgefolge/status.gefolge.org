@@ -1,7 +1,6 @@
 use {
     std::{
         cmp::Ordering::*,
-        path::Path,
         pin::Pin,
         process::Stdio,
         sync::Arc,
@@ -362,16 +361,8 @@ impl Supervisor {
                 *status = GefolgeWebCommitStatus::Deploy;
                 let new_head = *new_head;
                 Some(tokio::spawn(async move {
-                    Command::new("git").arg("reset").arg("--hard").arg(new_head.to_string()).current_dir(GEFOLGE_WEB_BUILD_REPO_PATH).check("git reset").await?;
-                    //TODO cargo sweep (limit to once per Rust version)
-                    println!("supervisor: building gefolge-web {new_head}");
-                    Command::new("cargo").arg("build").arg("--release").arg("--target=x86_64-unknown-linux-musl").arg("--package=gefolge-web").arg("--package=gefolge-web-back").current_dir(GEFOLGE_WEB_BUILD_REPO_PATH).kill_on_drop(true).check("cargo build").await?;
-                    Command::new("ssh").arg("gefolge.org").arg("env -C /opt/git/github.com/dasgefolge/gefolge.org/main git pull").check("ssh").await?;
-                    Command::new("ssh").arg("gefolge.org").arg("sudo systemctl stop gefolge-web").check("ssh").await?;
-                    Command::new("scp").arg(Path::new(GEFOLGE_WEB_BUILD_REPO_PATH).join("target").join("release").join("gefolge-web")).arg("gefolge.org:bin/gefolge-web").check("scp").await?;
-                    Command::new("scp").arg(Path::new(GEFOLGE_WEB_BUILD_REPO_PATH).join("target").join("release").join("gefolge-web-back")).arg("gefolge.org:bin/gefolge-web-back").check("scp").await?;
-                    Command::new("ssh").arg("gefolge.org").arg("/opt/git/github.com/dasgefolge/gefolge.org/main/assets/deploy.sh").check("ssh").await?;
-                    Command::new("ssh").arg("gefolge.org").arg("sudo systemctl start gefolge-web").check("ssh").await?;
+                    Command::new("ssh").arg("gefolge.org").arg("env -C /opt/git/github.com/dasgefolge/gefolge.org/build git pull").check("ssh").await?;
+                    Command::new("ssh").arg("gefolge.org").arg("env -C /opt/git/github.com/dasgefolge/gefolge.org/build assets/deploy.sh").check("ssh").await?;
                     Ok(new_head)
                 }))
             } else {
