@@ -137,6 +137,7 @@ async fn index(supervisor: &State<Supervisor>) -> RawHtml<String> {
         h1 {
             a(href = "https://gefolge.org/") : "gefolge.org";
         }
+        p(style = "font-style: italic; font-size: small;") : "inklusive Peter Discord bot";
         p {
             : "Aktuell läuft: ";
             code(id = "gefolge-web-current") {
